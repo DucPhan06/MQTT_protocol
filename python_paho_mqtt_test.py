@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 
 # Define topic
-topic = "topic"
+topic = "test"
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, reason_code, properties):
@@ -24,13 +24,12 @@ mqttc.tls_set(ca_certs=CAFILE, certfile=CERTFILE, keyfile=KEYFILE)
 mqttc.on_connect = on_connect
 mqttc.on_message = on_message
 
-mqttc.connect("mqtt.eclipseprojects.ioc", MQTT_BROKER_PORT, 60)
 
 # Connect to the remote EC2 instance
 mqttc.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
 
 # Publish a test message
-mqttc.publish("test/topic", "Hello from Python!")
+# mqttc.publish("test", "Hello from Python!")
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
