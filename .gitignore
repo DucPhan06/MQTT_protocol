@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+
+.venv/
+venv/
+env/
+
+.env
+.env.*
+
+.vscode/
+.idea/
+
+.DS_Store
+Thumbs.db
+
+*.log
+
+# AWS MQTT TLS files
+*.crt
+*.key
+*.pem
+
+# Sensitive configuration files
+config_aws.md
