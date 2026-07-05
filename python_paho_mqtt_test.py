@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+from config import MQTT_USERNAME, MQTT_PASSWORD, CAFILE, CERTFILE, KEYFILE
 
 # Define topic
 topic = "test"

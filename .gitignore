@@ -16,10 +16,9 @@ Thumbs.db
 
 *.log
 
-# AWS MQTT TLS files
 *.crt
 *.key
 *.pem
+*.sh
 
-# Sensitive configuration files
 config_aws.md
