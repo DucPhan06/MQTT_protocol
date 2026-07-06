@@ -9,5 +9,5 @@ CAFILE = Path(require_env("CAFILE"))
 CERTFILE = Path(require_env("CERTFILE"))
 KEYFILE = Path(require_env("KEYFILE"))
 
-MQTT_HOST = require_env("MQTT_BROKER_HOST")
-MQTT_PORT = int(require_env("MQTT_BROKER_PORT"))
+MQTT_BROKER_HOST = require_env("MQTT_BROKER_HOST")
+MQTT_BROKER_PORT = int(require_env("MQTT_BROKER_PORT"))
