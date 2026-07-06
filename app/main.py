@@ -1,5 +1,4 @@
 import asyncio
-import json
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.mqtt.client import MQTTManager
