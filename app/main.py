@@ -1,22 +1,28 @@
 import asyncio
+import json
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.mqtt.client import MQTTManager
 from app.services.news_service import get_news
+from app.services.article_service import normalize_articles
+from app.services.mqtt_service import publish_article
 
 REFETCH_TIME = 15
 
+#TODO: avoid XSS in api
+
 async def auto_fetch_news():
     while True:
-        data = get_news()
-        article_test = []
-        for article in data:
-            article_test.append(article)
-            if len(article_test) == 3:
-                break
+        try:
+            raw = get_news()
+            data = normalize_articles(raw)
+            print(data)
+
+            for article in data:
+                publish_article(app.state.mqtt, article)
         
-        for article in article_test:
-            app.state.mqtt.publish("test", article["title"])
+        except Exception as e:
+            print("News fetch task error:", e)
         
         await asyncio.sleep(REFETCH_TIME)
 
