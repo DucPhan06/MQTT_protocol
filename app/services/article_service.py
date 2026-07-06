@@ -17,8 +17,6 @@ ALLOWED_CATEGORIES = {
     "general",
 }
 
-TOPIC_ROOT = "news"
-
 def normalize_article(raw: dict) -> NewsArticle:
     return NewsArticle(
         article_id = parse_string(raw.get("article_id")),

@@ -11,3 +11,5 @@ KEYFILE = Path(require_env("KEYFILE"))
 
 MQTT_BROKER_HOST = require_env("MQTT_BROKER_HOST")
 MQTT_BROKER_PORT = int(require_env("MQTT_BROKER_PORT"))
+
+NEWS_FETCH_TIMER = 15

@@ -38,7 +38,7 @@ class MQTTManager:
         self.client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
         self.client.loop_start()
 
-    def publish(self, topic: str, msg: str):
+    def publish(self, topic: str, msg: str, qos: int = 0, retain: bool = False):
         if not self.connected:
             print("Error: client is not connected.\n")
             return

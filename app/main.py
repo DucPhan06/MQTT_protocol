@@ -5,12 +5,11 @@ from app.mqtt.client import MQTTManager
 from app.services.news_service import get_news
 from app.services.article_service import normalize_articles
 from app.services.mqtt_service import publish_article
-
-REFETCH_TIME = 15
+from app.core.mqtt_config import NEWS_FETCH_TIMER
 
 #TODO: avoid XSS in api
 
-async def auto_fetch_news():
+async def auto_fetch_news(mqtt: MQTTManager):
     while True:
         try:
             raw = get_news()
@@ -18,12 +17,12 @@ async def auto_fetch_news():
             print(data)
 
             for article in data:
-                publish_article(app.state.mqtt, article)
+                publish_article(mqtt, article)
         
         except Exception as e:
             print("News fetch task error:", e)
         
-        await asyncio.sleep(REFETCH_TIME)
+        await asyncio.sleep(NEWS_FETCH_TIMER)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -33,7 +32,7 @@ async def lifespan(app: FastAPI):
     client1.connect()
     app.state.mqtt = client1
 
-    task = asyncio.create_task(auto_fetch_news())
+    task = asyncio.create_task(auto_fetch_news(client1))
 
     yield
 
