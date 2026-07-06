@@ -7,5 +7,5 @@ class NewsArticle(BaseModel):
     title: str
     link: str
     source: str
-    category: str
+    categories: list[str]
     duplicate: bool

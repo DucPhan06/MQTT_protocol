@@ -25,7 +25,7 @@ def normalize_article(raw: dict) -> NewsArticle:
         title = raw.get("title") or "",
         link = raw.get("link") or "",
         source = raw.get("source_name") or raw.get("source") or "",
-        category = resolve_category(raw.get("category")),
+        categories = resolve_category(list(raw.get("category"))),
         published_at = raw.get("pubDate") or "",
         duplicate =  bool(raw.get("duplicate", False))
     )
@@ -35,11 +35,14 @@ def normalize_articles(raw_articles: list[dict]) -> list[NewsArticle]:
         raw_articles[i] = normalize_article(raw_articles[i])
     return raw_articles
 
-def resolve_category(category) -> str:
-    if isinstance(category, list):  
-        category = category[0] if category[0] in ALLOWED_CATEGORIES else "general"
-    elif not isinstance(category, str):
-        category = "general"
+def resolve_category(raw_category: list) -> list:
+    categories = set()
+
+    for cat in raw_category:
+        if cat in ALLOWED_CATEGORIES:
+            categories.add(cat)
+        else:
+            categories.add("general")
     
-    return category
+    return list(categories)
  
