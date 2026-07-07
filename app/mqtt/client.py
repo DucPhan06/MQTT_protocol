@@ -43,7 +43,7 @@ class MQTTManager:
             print("Error: client is not connected.\n")
             return
 
-        self.client.publish(topic, msg)
+        self.client.publish(topic, msg, qos=qos, retain=retain)
 
     def disconnect(self):
         self.client.loop_stop()
