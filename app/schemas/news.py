@@ -13,6 +13,8 @@ class NewsArticle(BaseModel):
     categories: list[str]
     language: list[str]
     country: list[str]
+    #TODO: convert to datetime to store db
     published_at: str
     fetched_at: str
+    #####
     duplicate: bool

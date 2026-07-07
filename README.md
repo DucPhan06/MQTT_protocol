@@ -67,6 +67,15 @@ If the project has a `requirements.txt` file later, use:
 pip install -r requirements.txt
 ```
 
+## Database Dependencies
+
+This project uses PostgreSQL to store normalized news articles before publishing them through MQTT.
+
+Install the required Python database packages:
+
+```powershell
+python -m pip install sqlalchemy alembic "psycopg[binary]"
+
 ### Run the FastAPI app
 
 ```powershell
