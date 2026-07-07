@@ -5,9 +5,16 @@
 from datetime import datetime
 
 from app.db.base import Base
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import DateTime, String, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Column, DateTime, ForeignKey, String, Table, Text, func
 from sqlalchemy.dialects.postgresql import ARRAY
+
+article_categories = Table(
+    "article_categories",
+    Base.metadata,
+    Column("article_id", ForeignKey("articles.id"), primary_key=True),
+    Column("category_id", ForeignKey("categories.id"), primary_key=True),
+)
 
 class Article(Base):
     __tablename__ = "articles"
@@ -24,8 +31,11 @@ class Article(Base):
 
     source_id: Mapped[str] = mapped_column(String(255), nullable=True)
 
-    #TODO: create tables according to categories
-    categories: Mapped[list[str]] = mapped_column(ARRAY(String(50)), nullable=False, default=list)
+    categories = relationship(
+        "Category",
+        secondary="article_categories",
+        back_populates="articles",
+    )
 
     language: Mapped[list[str]] = mapped_column(ARRAY(String(50)), nullable=False, default=list)
 

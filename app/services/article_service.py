@@ -1,21 +1,31 @@
 #app.services.article_service.py
 
-from app.schemas.news import NewsArticle
+from sqlalchemy.orm import Session
 
-ALLOWED_CATEGORIES = {
-    "business",
-    "entertainment",
-    "environment",
-    "food",
-    "health",
-    "politics",
-    "science",
-    "sports",
-    "technology",
-    "top",
-    "world",
-    "general",
-}
+from app.repositories import article_repo
+from app.repositories.category_repo import save_category_if_new
+from app.schemas.news import NewsArticle
+from app.services import mqtt_service, topic_service
+
+def process_article(db, mqtt_manager, article: NewsArticle):
+    if article.duplicate:
+        return False
+
+    saved = article_repo.save_article_if_new(db, article)
+
+    if not saved:
+        return False
+
+    topics = topic_service.build_article_topics(article)
+    payload = article.model_dump_json()
+
+    mqtt_service.publish_to_topics(mqtt_manager, article, topics, payload)
+
+    return True
+
+def save_article_categories(db: Session, article: NewsArticle) -> None:
+    for category in article.categories:
+        save_category_if_new(db, category)
 
 def normalize_article(raw: dict) -> NewsArticle:
     return NewsArticle(
@@ -24,7 +34,7 @@ def normalize_article(raw: dict) -> NewsArticle:
         link = parse_string(raw.get("link")),
         source_name = parse_string(raw.get("source_name")),
         source_id = parse_string(raw.get("source_id")),
-        categories = resolve_category(list(raw.get("category"))),
+        categories = parse_string_list(raw.get("category")),
         language = parse_string_list(raw.get("language")),
         country = parse_string_list(raw.get("country")),
         fetched_at = parse_string(raw.get("fetched_at")),
@@ -36,17 +46,6 @@ def normalize_articles(raw_articles: list[dict]) -> list[NewsArticle]:
     for i in range(len(raw_articles)):
         raw_articles[i] = normalize_article(raw_articles[i])
     return raw_articles
-
-def resolve_category(raw_category: list) -> list:
-    categories = set()
-
-    for cat in raw_category:
-        if cat in ALLOWED_CATEGORIES:
-            categories.add(cat)
-        else:
-            categories.add("general")
-    
-    return list(categories)
  
 def parse_string_list(raw) -> list[str]:
     if isinstance(raw, list):

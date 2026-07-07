@@ -3,10 +3,8 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.db.sessions import SessionLocal
 from app.mqtt.client import MQTTManager
-from app.repositories.article_repo import save_article_if_new
 from app.services.news_service import get_news
-from app.services.article_service import normalize_articles
-from app.services.mqtt_service import publish_article
+from app.services.article_service import process_article, normalize_articles
 from app.core.mqtt_config import NEWS_FETCH_TIMER
 
 #TODO: avoid XSS in api
@@ -22,12 +20,7 @@ async def auto_fetch_news(mqtt: MQTTManager):
             print(data)
 
             for article in data:
-                is_new = save_article_if_new(db, article)
-
-                if is_new:
-                    publish_article(mqtt, article)
-                else:
-                    print("Duplicate article, skipping publish.\n")
+                process_article(db, mqtt, article)
         
         except Exception as e:
             db.rollback()
