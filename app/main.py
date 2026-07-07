@@ -1,4 +1,4 @@
-import asyncio
+import asyncio, traceback
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.db.sessions import SessionLocal
@@ -25,6 +25,7 @@ async def auto_fetch_news(mqtt: MQTTManager):
         except Exception as e:
             db.rollback()
             print("News fetch task error:", e)
+            traceback.print_exc()
 
         finally:
             db.close()

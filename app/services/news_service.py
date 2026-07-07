@@ -15,10 +15,6 @@ def get_news():
 
         if response.status_code == 200:
             data = response.json()
-
-            #debug and visualize purpose
-            for article in data["results"]:
-                print(f"Article: {article["category"]}")
                 
             return data["results"]
         

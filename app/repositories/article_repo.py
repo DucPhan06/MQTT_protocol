@@ -21,7 +21,6 @@ def save_article_if_new(db: Session, article_data: NewsArticle) -> bool:
         source_name=article_data.source_name,
         source_id=article_data.source_id,
         language=article_data.language,
-        categories=article_data.category,
         country=article_data.country,
         fetched_at=article_data.fetched_at,
         published_at=article_data.published_at,

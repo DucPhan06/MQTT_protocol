@@ -13,11 +13,16 @@ def process_article(db, mqtt_manager, article: NewsArticle):
 
     saved = article_repo.save_article_if_new(db, article)
 
+    print(f"saved: {saved}")
+
     if not saved:
         return False
 
     topics = topic_service.build_article_topics(article)
     payload = article.model_dump_json()
+
+    print(f"topics: {topics}")
+    print(f"payload: {payload}")
 
     mqtt_service.publish_to_topics(mqtt_manager, article, topics, payload)
 
