@@ -10,11 +10,12 @@ from app.core.mqtt_config import (
 )
 
 class MQTTManager:
-    def __init__(self, settings, id: str):
-        self.settings = settings
+    def __init__(self, id: str, topic: str = "news/v1/#", on_client_connect = None):
         self.id = id
+        self.topic = topic
         self.client = self.create_client()
         self.connected = False
+        self.on_client_connect = on_client_connect
 
     def create_client(self):
         client = mqtt.Client( mqtt.CallbackAPIVersion.VERSION2, client_id=self.id)
@@ -29,7 +30,11 @@ class MQTTManager:
 
     def on_connect(self, client, userdata, flags, reason_code, properties):
         print(f"Connected with result code {reason_code}")
+        self.subscribe(self.topic)
         self.connected = True
+
+        if self.on_client_connect:
+            self.on_client_connect(self.id)
 
     def on_message(self, client, userdata, msg):
         print("Message received on topic " + msg.topic + ": " + msg.payload.decode())
@@ -44,6 +49,9 @@ class MQTTManager:
             return
 
         self.client.publish(topic, msg, qos=qos, retain=retain)
+    
+    def subscribe(self, topic: str):
+        self.client.subscribe(topic)
 
     def disconnect(self):
         self.client.loop_stop()

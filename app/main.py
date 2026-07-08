@@ -36,7 +36,7 @@ async def auto_fetch_news(mqtt: MQTTManager):
 async def lifespan(app: FastAPI):
     #Start up create MQTT instances
     print("Application starting up...")
-    client1 = MQTTManager("", "12345678")
+    client1 = MQTTManager("12345678")
     client1.connect()
     app.state.mqtt = client1
 
