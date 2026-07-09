@@ -1,15 +1,24 @@
 import asyncio
 import uuid
 import sys
+import math
 
 from app.mqtt.client import MQTTManager
 from app.services.simulation_service import SimulationService
 
-def increment_client(num: int):
-    num += 1
+def print_response(client_id: str, topic: str):
+    print(f"client {client_id} subscribes to {topic} received a news.\n")
+
+#divide topics choice to 4 choice: business, top, politics, food 
+def topics_choice(index: int, total: int) -> str:
+    section = math.floor(total/4)
+
+    if(index < section): return "news/v1/business"
+    if(index < section*2): return "news/v1/top"
+    if(index < section*3): return "news/v1/politics"
+    return "news/v1/food"
 
 async def main():
-    connected_client = 0
     client_num = 1
     clients = []
     simul = SimulationService()
@@ -19,7 +28,9 @@ async def main():
 
     for i in range(client_num):
         client_id = str(f"client_{i}_{uuid.uuid4()}")
-        client = MQTTManager(client_id, "news/v1/#", on_client_connect=simul.record_client)
+        topic = topics_choice(i, client_num)
+        
+        client = MQTTManager(client_id, topic, on_client_connect=simul.record_client, on_message_received=print_response)
 
         client.connect()
 

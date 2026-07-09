@@ -10,12 +10,13 @@ from app.core.mqtt_config import (
 )
 
 class MQTTManager:
-    def __init__(self, id: str, topic: str = "news/v1/#", on_client_connect = None):
+    def __init__(self, id: str, topic: str = "news/v1/#", on_client_connect = None, on_message_received = None):
         self.id = id
         self.topic = topic
         self.client = self.create_client()
         self.connected = False
         self.on_client_connect = on_client_connect
+        self.on_message_received = on_message_received
 
     def create_client(self):
         client = mqtt.Client( mqtt.CallbackAPIVersion.VERSION2, client_id=self.id)
@@ -37,7 +38,10 @@ class MQTTManager:
             self.on_client_connect(self.id)
 
     def on_message(self, client, userdata, msg):
-        print("Message received on topic " + msg.topic + ": " + msg.payload.decode())
+        if self.on_message_received:
+            self.on_message_received(self.id, msg.topic)
+        else:
+            print("Message received on topic " + msg.topic + ": " + msg.payload.decode())
 
     def connect(self):
         self.client.connect(MQTT_BROKER_HOST, MQTT_BROKER_PORT, 60)
