@@ -4,7 +4,7 @@
 
 News Distribution MQTT is a small backend project that fetches news articles, normalizes the article data, and publishes each article to MQTT topics based on its category.
 
-The main idea is to simulate a real-time news distribution system. Instead of every client calling the news API directly, the backend fetches the news once, processes it, and lets MQTT handle distributing the articles to subscribers.
+The main idea is to simulate a real-time news distribution system. Instead of every client calling the news API directly, the backend fetches the news once, processes it and the MQTT broker handle distributing the articles to subscribers.
 
 For example, a science article can be published to:
 
@@ -48,9 +48,7 @@ Subscribers
 * Paho MQTT
 * Mosquitto MQTT Broker
 * News API
-* TLS certificates
-* Environment variables with `.env`
-
+* PostgreSQL
 ---
 
 ## How to Run Locally
@@ -84,6 +82,12 @@ fastapi dev
 
 ---
 
+## Simulate clients
+e.g. 100 clients
+```powershell
+python -m app.scripts.simulate_clients 100
+```
+
 ## Example MQTT Topics
 
 ```text
@@ -95,7 +99,7 @@ news/health
 news/general
 ```
 
-A subscriber can listen to one category:
+A subscriber can listen to one category like:
 
 ```text
 news/science
@@ -111,4 +115,6 @@ news/#
 
 ## Project Goal
 
-The goal of this project is to practice backend architecture, MQTT communication, topic-based message routing, and real-time data distribution.
+The goal of this project is to practice backend architecture, PostgreSQL database design, MQTT communication, secure network connections, topic-based message routing, cloud deployment, and real-time data distribution.
+
+The project is also used to explore system scalability by simulating many MQTT subscribers and observing how the broker handles concurrent connections and message delivery.
